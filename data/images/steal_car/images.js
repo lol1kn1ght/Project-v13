@@ -8,7 +8,7 @@ let router = new Proxy(
   {
     get(target, prop) {
       try {
-        return readdir(__dirname + `/` + prop);
+        return readdir(__dirname + "/" + prop);
       } catch (e) {
         return undefined;
       }
