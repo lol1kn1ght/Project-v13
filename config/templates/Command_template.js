@@ -1,8 +1,25 @@
-const {MessageEmbed} = require("discord.js");
+const {MessageEmbed, MessageAttachment} = require("discord.js");
 
 module.exports = class Command_template {
   constructor(interaction) {
     this.interaction = interaction;
+  }
+
+  send(args) {
+    let embed;
+    if (this.interaction.replied) {
+      if (typeof args === "string")
+        return this.interaction.followUp(args, {fetchReply: true});
+
+      if (typeof args === "object")
+        return this.interaction.followUp({embeds: [args], fetchReply: true});
+    } else {
+      if (typeof args === "string")
+        return this.interaction.reply(args, {fetchReply: true});
+
+      if (typeof args === "object")
+        return this.interaction.reply({embeds: [args], fetchReply: true});
+    }
   }
 
   msg(embed_text, options) {
@@ -19,7 +36,6 @@ module.exports = class Command_template {
   msgE(embed_text, options = {}) {
     if (this.interaction.ephemeral || !this.interaction.replied) {
       this.msg(embed_text, options);
-      console.log("1");
       return;
     }
 
@@ -61,13 +77,17 @@ module.exports = class Command_template {
     if (!embed_text) throw new Error("No embed text");
 
     let embedTrue = new MessageEmbed()
-      .setAuthor(
-        this.interaction.member.user.tag,
-        this.interaction.member.user.displayAvatarURL({dynamic: true})
-      )
+      // .setAuthor(
+      //   this.interaction.member.user.tag,
+      //   this.interaction.member.user.displayAvatarURL({dynamic: true})
+      // )
       .setDescription(embed_text)
       .setColor(this.config.colorEmbed)
-      .setTimestamp();
+      .setTimestamp()
+      .setFooter(
+        this.interaction.member.user.tag,
+        this.interaction.member.user.displayAvatarURL({dynamic: true})
+      );
 
     return embedTrue;
   }
@@ -76,17 +96,28 @@ module.exports = class Command_template {
     if (!embed_text) throw new Error("No embed text");
 
     let embedFalse = new MessageEmbed()
-      .setAuthor(
-        this.interaction.member.user.tag,
-        this.interaction.member.user.displayAvatarURL({dynamic: true})
-      )
+      // .setAuthor(
+      //   this.interaction.member.user.tag,
+      //   this.interaction.member.user.displayAvatarURL({dynamic: true})
+      // )
       .setDescription(embed_text)
       .setColor(this.config.colorEmbedFalse)
-      .setTimestamp();
+      .setTimestamp()
+      .setFooter(
+        this.interaction.member.user.tag,
+        this.interaction.member.user.displayAvatarURL({dynamic: true})
+      );
 
     return embedFalse;
   }
   _send(embed, options) {
+    if (options.attachments) {
+      let i = 0;
+      const attachment = options.attachments.map(image => {
+        new MessageAttachment(image, `image${i++}.png`);
+        embed.setImage();
+      });
+    }
     try {
       if (!this.interaction.replied) {
         return this.interaction.reply(
