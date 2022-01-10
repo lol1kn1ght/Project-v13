@@ -17,7 +17,6 @@ const Client = new Discord.Client({
     Intents.FLAGS.GUILD_MESSAGES
   ]
 });
-
 class Bot_builder {
   constructor() {
     this.bot = Client;

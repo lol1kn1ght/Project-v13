@@ -5,6 +5,7 @@
   "errorsChannel": "432890572269813760",
   "reports_channel": "823259546859995146",
   "slash_guild": "674657975264346142",
+  "language": "ru",
   "mongo": {
     "auth": false,
     "pass": "",
